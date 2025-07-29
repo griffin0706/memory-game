@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Card = () => {
   const [data, setData] = useState([]);
@@ -242,45 +242,44 @@ const Card = () => {
               <div className="score">Best Score: {bestScore}</div>
             </div>
           </div>
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="app"
-          >
-            <div className="card-container">
-              {data.slice(0, difficulty).map((pokemon) => {
-                return (
-                  <div
-                    key={pokemon.id}
-                    className={flipped ? "card flipped" : "card"}
-                  >
-                    {!flipped ? (
-                      <div className="card-item">
-                        <img
-                          className="card-image"
-                          src={
-                            pokemon.sprites.other["official-artwork"]
-                              .front_default
-                          }
-                          alt={pokemon.forms[0].name}
-                          onClick={() => handleSelect(pokemon)}
-                        />
-                        <p>{pokemon.forms[0].name}</p>
-                      </div>
-                    ) : (
-                      <div className="card-back back-image card-item"></div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+          <AnimatePresence>
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="app"
+            >
+              <div className="card-container">
+                {data.slice(0, difficulty).map((pokemon) => {
+                  return (
+                    <div className={flipped ? "card flipped" : "card"}>
+                      {!flipped ? (
+                        <div className="card-item">
+                          <img
+                            className="card-image"
+                            src={
+                              pokemon.sprites.other["official-artwork"]
+                                .front_default
+                            }
+                            alt={pokemon.forms[0].name}
+                            onClick={() => handleSelect(pokemon)}
+                          />
+                          <p>{pokemon.forms[0].name}</p>
+                        </div>
+                      ) : (
+                        <div className="card-back back-image card-item"></div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
 
-            <h2>
-              {score + 1} / {winScore + 1}
-            </h2>
-          </motion.div>
+              <h2>
+                {score + 1} / {winScore + 1}
+              </h2>
+            </motion.div>
+          </AnimatePresence>
         </div>
       )}
     </>
