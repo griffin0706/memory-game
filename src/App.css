@@ -1,51 +1,181 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Play:wght@400;700&family=Press+Start+2P&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
-
-.app {
-  height: 100vh;
-  width: 100vw;
+.menu {
+  margin: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px;
+  flex-wrap: wrap;
+  gap: 70px;
+  background-color: rgba(7, 6, 6, 0.5);
+  border: 2px solid rgb(8, 8, 8);
+  padding: 30px;
+  border-radius: 15px;
+}
+
+.bg-blur {
+  position: fixed;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-size: cover;
+  background-image: url("./assets/pokeball.jpeg");
+  background-position: center center;
+  z-index: -2;
+  display: inline;
+  opacity: 0.5;
+}
+
+.logo {
+  cursor: pointer;
+  transition: transform 0.3s ease-out;
+  text-align: center;
+  font-family: "Press Start 2P", system-ui;
+  font-size: 2.5rem;
+  -webkit-text-stroke: 2px black;
+}
+
+.home-text {
+  font-family: "Press Start 2P", system-ui;
+  font-size: 2rem;
+  -webkit-text-stroke: 2px black;
+  text-align: center;
+}
+
+.logo:hover {
+  transform: scale(1.1);
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.app {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  height: 100%;
 }
 
 .card-container {
-  height: 80%;
-  width: 80%;
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 30px;
-  padding: 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  margin: auto;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .card {
-  border: 2px solid black;
-  border-radius: 10px;
-  transition: transform 0.3s ease-in-out;
-  background-color: rgb(35, 41, 41);
+  border-radius: 15px;
   align-items: center;
   display: flex;
   justify-content: center;
   flex-direction: column;
   text-align: center;
+  transition: transform 0.3s ease;
+  border: 2px solid rgb(8, 8, 8);
+  position: relative;
+  width: 220px;
+  height: 300px;
+  background-color: rgba(7, 6, 6, 0.5);
+}
+
+.card:hover {
+  box-shadow: 0 0 15px 5px rgba(17, 17, 17, 0.7);
+  transform: scale(1.05);
 }
 
 .card img {
   max-height: 100%;
   max-width: 100%;
+  cursor: pointer;
 }
 
 .card p {
   width: 100%;
-  border-top: 2px solid black;
+
   text-transform: capitalize;
 }
 
-.card:hover {
-  transform: scale(1.1);
+.game {
+  margin: auto;
+}
+
+.header {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
+  margin: auto;
+  padding: 20px 40px;
+}
+
+.score-container {
+  background-color: rgba(7, 6, 6, 0.5);
+  border: 2px solid rgb(8, 8, 8);
+  padding: 20px;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-back {
+  transform: rotateY(180deg);
+}
+
+.card.hidden {
+  display: hidden;
+}
+
+.back-image {
+  background-color: rgba(7, 6, 6, 0.5);
+  padding: 50px;
+  border: 2px solid rgb(8, 8, 8);
+  border-radius: 50px;
+}
+
+.difficulty-btn {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+}
+
+@media screen and (max-width: 600px) {
+  .logo {
+    font-size: 2rem;
+  }
+  .score-container {
+    padding: 10px;
+    gap: 5px;
+  }
+  .menu {
+    margin: auto 10px;
+  }
+  .header {
+    padding: 20px;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .menu {
+    margin: auto 10px;
+  }
 }
