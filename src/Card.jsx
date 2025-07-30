@@ -128,7 +128,7 @@ const Card = () => {
       setFlipped(false);
     }, 1500);
   }, []); // Empty dependency array to run only once on mount
-  if (loading) return <div>Loading data...</div>;
+  if (loading) return <div className="spinner"></div>;
   if (error) return <div>Error: {error.message}</div>;
 
   const handleSelect = (pokemon) => {

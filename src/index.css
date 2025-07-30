@@ -19,6 +19,7 @@ button {
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
   border: none;
+  color: white;
 }
 button:hover {
   transform: scale(1.1);
