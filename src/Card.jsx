@@ -1,6 +1,10 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import audioFlip from "./assets/audio/flipcard.mp3";
+import audioSelect from "./assets/audio/gamestart.mp3";
+import audioHover from "./assets/audio/hover.mp3";
+import Modal from "./Modal";
 
 const Card = () => {
   const [data, setData] = useState([]);
@@ -15,6 +19,8 @@ const Card = () => {
   const [toggle, setToggle] = useState(false);
   const [winScore, setWinScore] = useState(0);
   const [count, setCount] = useState(1);
+  const [modalToggle, setModalToggle] = useState(false);
+  const [modalText, setModalText] = useState("");
 
   useEffect(() => {
     let randomArr = [];
@@ -134,7 +140,8 @@ const Card = () => {
       setScore(0);
       setSelected([]);
       setCount(0);
-      alert("Game Over!");
+      setModalText("Game Over!");
+      setModalToggle(true);
       if (bestScore < score) {
         setBestScore(score);
       }
@@ -154,7 +161,8 @@ const Card = () => {
     setScore(0);
     setSelected([]);
     setCount(0);
-    alert("You Won!");
+    setModalText("You Won!");
+    setModalToggle(true);
     setTimeout(() => {
       setFlipped(false);
     }, 1200);
@@ -182,7 +190,7 @@ const Card = () => {
   };
 
   const flippedSound = () => {
-    const audio = new Audio("./src/assets/flipcard.mp3");
+    const audio = new Audio(audioFlip);
     audio.play();
   };
 
@@ -190,9 +198,19 @@ const Card = () => {
     window.location.reload();
   };
 
+  const selectSound = () => {
+    const audio = new Audio(audioSelect);
+    audio.play();
+  };
+
+  const hoverSound = () => {
+    const audio = new Audio(audioHover);
+    audio.play();
+  };
+
   const handleDifficulty = (e) => {
+    selectSound();
     setDifficulty(e.target.value);
-    setToggle(true);
     setCount(1);
     if (e.target.value == "3") {
       setWinScore(4);
@@ -201,11 +219,19 @@ const Card = () => {
     } else if (e.target.value == "5") {
       setWinScore(9);
     }
+    setToggle(true);
   };
 
   const home = () => {
+    hoverSound();
     setToggle(false);
     setScore(0);
+    setModalToggle(false);
+  };
+
+  const setModal = () => {
+    hoverSound();
+    setModalToggle(false);
   };
 
   return (
@@ -216,13 +242,25 @@ const Card = () => {
             <h1>Memory Game</h1>
           </div>
           <div className="difficulty-btn">
-            <button value="3" onClick={handleDifficulty}>
+            <button
+              value="3"
+              onClick={handleDifficulty}
+              onMouseEnter={hoverSound}
+            >
               Easy
             </button>
-            <button value="4" onClick={handleDifficulty}>
+            <button
+              value="4"
+              onClick={handleDifficulty}
+              onMouseEnter={hoverSound}
+            >
               Medium
             </button>
-            <button value="5" onClick={handleDifficulty}>
+            <button
+              value="5"
+              onClick={handleDifficulty}
+              onMouseEnter={hoverSound}
+            >
               Hard
             </button>
           </div>
@@ -242,6 +280,7 @@ const Card = () => {
               <div className="score">Best Score: {bestScore}</div>
             </div>
           </div>
+
           <AnimatePresence>
             <motion.div
               initial={{ scale: 0 }}
@@ -250,6 +289,13 @@ const Card = () => {
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
               className="app"
             >
+              <Modal
+                modalText={modalText}
+                home={home}
+                modalToggle={modalToggle}
+                setModal={setModal}
+              />
+
               <div className="card-container">
                 {data.slice(0, difficulty).map((pokemon) => {
                   return (

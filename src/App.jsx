@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import "./App.css";
 import Card from "./Card";
+import Modal from "./Modal";
 
 function App() {
   return (
