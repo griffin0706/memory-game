@@ -8,7 +8,6 @@ import Modal from "./Modal";
 
 const Card = () => {
   const [data, setData] = useState([]);
-  const [data2, setData2] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [score, setScore] = useState(0);
@@ -24,18 +23,20 @@ const Card = () => {
 
   useEffect(() => {
     let randomArr = [];
-    for (let i = 0; i < 10; i++) {
-      randomArr = [...randomArr, Math.floor(Math.random() * 1025) + 1];
-    }
-    const duplicateId = randomArr.filter(
-      (item, index) => randomArr.indexOf(item) !== index
-    );
-    if (duplicateId.length > 0) {
-      randomArr = [];
+
+    const randomizer = () => {
       for (let i = 0; i < 10; i++) {
         randomArr = [...randomArr, Math.floor(Math.random() * 1025) + 1];
       }
-    }
+      const duplicateId = randomArr.filter(
+        (item, index) => randomArr.indexOf(item) !== index
+      );
+      if (duplicateId.length > 0) {
+        randomArr = [];
+        randomizer();
+      }
+    };
+    randomizer();
 
     const fetchApiOne = () =>
       fetch(`https://pokeapi.co/api/v2/pokemon/${randomArr[0]}/`).then((res) =>
@@ -127,48 +128,74 @@ const Card = () => {
     setTimeout(() => {
       setFlipped(false);
     }, 1500);
-  }, []); // Empty dependency array to run only once on mount
+  }, []);
+
   if (loading) return <div className="spinner"></div>;
   if (error) return <div>Error: {error.message}</div>;
 
+  // Select Difficulty
+  const handleDifficulty = (e) => {
+    selectSound();
+    setDifficulty(e.target.value);
+    setCount(1);
+    if (e.target.value == "3") {
+      setWinScore(4);
+    } else if (e.target.value == "4") {
+      setWinScore(6);
+    } else if (e.target.value == "5") {
+      setWinScore(9);
+    }
+    setToggle(true);
+  };
+
+  // Flip the cards and check if the player win or lose
   const handleSelect = (pokemon) => {
-    flippedSound();
-    setFlipped(!flipped);
     setSelected((prev) => [...prev, pokemon]);
     const duplicates = selected.filter((item) => item === pokemon);
+
+    // Game Lose
     if (duplicates.length > 0) {
-      setScore(0);
-      setSelected([]);
-      setCount(0);
       setModalText("Game Over!");
-      setModalToggle(true);
+
+      setTimeout(() => {
+        setModalToggle(true);
+        setScore(0);
+        setSelected([]);
+        setCount(0);
+      }, 500);
+      // Update Best Score
       if (bestScore < score) {
         setBestScore(score);
       }
     } else {
-      setScore(score + 1);
-    }
-    shuffleArray(pokemon);
-    setCount(count + 1);
+      // Game Won
+      if (score > winScore - 1) {
+        setModalText("You Won!");
+        setTimeout(() => {
+          setModalToggle(true);
+          setBestScore(score + 1);
+          setScore(0);
+          setSelected([]);
+          setCount(0);
+        }, 500);
+      }
+      // Continue Flipping Cards
+      else {
+        shuffleArray(pokemon);
+        flippedSound();
+        setFlipped(!flipped);
 
-    setTimeout(() => {
-      setFlipped(false);
-    }, 1300);
+        setCount(count + 1);
+        setTimeout(() => {
+          setFlipped(false);
+          setScore(score + 1);
+        }, 1300);
+      }
+    }
   };
 
-  if (score > winScore) {
-    setBestScore(score);
-    setScore(0);
-    setSelected([]);
-    setCount(0);
-    setModalText("You Won!");
-    setModalToggle(true);
-    setTimeout(() => {
-      setFlipped(false);
-    }, 1200);
-  }
-
-  const shuffleArray = (pokemon) => {
+  // Shuffle Cards
+  const shuffleArray = () => {
     const newArr = [...data];
     const shuffle = () => {
       for (let i = newArr.length - 1; i > 0; i--) {
@@ -189,13 +216,36 @@ const Card = () => {
     }
   };
 
+  // Back to Home
+  const home = () => {
+    hoverSound();
+    setToggle(false);
+    setScore(0);
+    setBestScore(0);
+    setModalToggle(false);
+    loader();
+  };
+
+  // Play again
+  const setModal = (pokemon) => {
+    hoverSound();
+    setModalToggle(false);
+    loader();
+    shuffleArray(pokemon);
+  };
+
+  // Loading Spinner
+  const loader = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 700);
+  };
+
+  // Audio
   const flippedSound = () => {
     const audio = new Audio(audioFlip);
     audio.play();
-  };
-
-  const refreshPage = () => {
-    window.location.reload();
   };
 
   const selectSound = () => {
@@ -206,32 +256,6 @@ const Card = () => {
   const hoverSound = () => {
     const audio = new Audio(audioHover);
     audio.play();
-  };
-
-  const handleDifficulty = (e) => {
-    selectSound();
-    setDifficulty(e.target.value);
-    setCount(1);
-    if (e.target.value == "3") {
-      setWinScore(4);
-    } else if (e.target.value == "4") {
-      setWinScore(6);
-    } else if (e.target.value == "5") {
-      setWinScore(9);
-    }
-    setToggle(true);
-  };
-
-  const home = () => {
-    hoverSound();
-    setToggle(false);
-    setScore(0);
-    setModalToggle(false);
-  };
-
-  const setModal = () => {
-    hoverSound();
-    setModalToggle(false);
   };
 
   return (
