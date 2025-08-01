@@ -152,11 +152,10 @@ const Card = () => {
   const handleSelect = (pokemon) => {
     setSelected((prev) => [...prev, pokemon]);
     const duplicates = selected.filter((item) => item === pokemon);
-
+    console.log(pokemon.forms[0].name);
     // Game Lose
     if (duplicates.length > 0) {
       setModalText("Game Over!");
-
       setTimeout(() => {
         setModalToggle(true);
         setScore(0);
@@ -181,15 +180,7 @@ const Card = () => {
       }
       // Continue Flipping Cards
       else {
-        shuffleArray(pokemon);
-        flippedSound();
-        setFlipped(!flipped);
-
-        setCount(count + 1);
-        setTimeout(() => {
-          setFlipped(false);
-          setScore(score + 1);
-        }, 1300);
+        shuffleArray();
       }
     }
   };
@@ -197,22 +188,29 @@ const Card = () => {
   // Shuffle Cards
   const shuffleArray = () => {
     const newArr = [...data];
-    const shuffle = () => {
-      for (let i = newArr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
-      }
-    };
-    shuffle();
-
+    for (let i = newArr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+    }
     const checkShuffle = newArr
-      .slice(0, 5)
+      .slice(0, difficulty)
       .filter((item) => selected.includes(item));
 
-    if (checkShuffle.length >= difficulty) {
-      shuffle();
+    if (checkShuffle.length >= difficulty - 1) {
+      shuffleArray();
     } else {
-      setData(newArr);
+      flippedSound();
+      setFlipped(!flipped);
+
+      setTimeout(() => {
+        setData(newArr);
+      }, 200);
+
+      setCount(count + 1);
+      setTimeout(() => {
+        setFlipped(false);
+        setScore(score + 1);
+      }, 1300);
     }
   };
 
@@ -323,7 +321,10 @@ const Card = () => {
               <div className="card-container">
                 {data.slice(0, difficulty).map((pokemon) => {
                   return (
-                    <div className={flipped ? "card flipped" : "card"}>
+                    <div
+                      key={pokemon.forms[0].name}
+                      className={flipped ? "card flipped" : "card"}
+                    >
                       {!flipped ? (
                         <div className="card-item">
                           <img
